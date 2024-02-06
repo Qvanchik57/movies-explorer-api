@@ -45,12 +45,12 @@ module.exports.patchUser = async (req, res, next) => {
     });
 };
 
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = async (req, res, next) => {
   const {
     email,
     name,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
+  await bcrypt.hash(req.body.password, 10)
     .then((hash) => Users.create({
       email,
       password: hash,
@@ -70,10 +70,10 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.login = (req, res, next) => {
+module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
-  return Users.findUserByCredentials(email, password)
+  return await Users.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
